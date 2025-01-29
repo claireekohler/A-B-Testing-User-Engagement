@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import random
 import matplotlib.pyplot as plt
+import seaborn as sns
 import matplotlib_inline
 random.seed(42)
 from statsmodels.stats import power as pwr
@@ -11,11 +12,10 @@ from scipy.stats import shapiro, chisquare, mannwhitneyu
 #Read data
 df = pd.read_csv('ab_data.csv')
 
+#Descriptive statistics
 df.info()
 df.head()
-
-#Count number in control and treatment 
-df.groupby(['group', 'converted']).agg('count')
+df.describe()
 
 #Drop flickers
 df.drop(df.query("group == 'control' and landing_page == 'new_page'").index, inplace=True)
@@ -25,10 +25,20 @@ df.drop(df.query("group == 'treatment' and landing_page == 'old_page'").index, i
 df.drop_duplicates(['user_id'], keep=False)
 
 #EDA
-df.groupby(['group']).agg({'converted':['sum','count','mean']})
-#Control and Treatment count about the same
+conversion_counts = df.groupby('group')['converted'].sum()
+#Control and Treatment conversion count about the same
 
 print(df.dtypes)
+print(conversion_counts)
+
+#Plot converted control and treatment
+plt.figure(figsize=(8,5))
+sns.barplot(x=conversion_counts.index, y=conversion_counts.values, palette=['blue',
+                                                                            'orange'])
+plt.xlabel('Group')
+plt.ylabel('Number of Conversions')
+plt.title('Comparison of Converted Users in Control  vs Treatment Groups')
+plt.show()
 
 
 #Shapiro-Wilk Test for normality
@@ -44,6 +54,9 @@ if p_value > alpha:
 else:
 #reject null hypothesis
     print('Data is not normally distributed')
+
+#p-value = 0
+#Data is not normally distributed
 
 #Sample Ratio Mismatch Test to test if the difference
 #is statistically significant
@@ -71,6 +84,8 @@ if p_value < 0.05:
     print("SRM detected!")
 else:
     print("No evidence of SRM.")
+#p-value = 0.95
+#No evidence of SRM
 
 #Mann-Whitney U Test - non-parametric test
 convert_control = df[df['group'] == 'control']['converted']
@@ -84,6 +99,8 @@ if p_value < alpha:
     print("Reject the null hypothesis: There is a significant difference between the control and treatment groups.")
 else:
     print("Fail to reject the null hypothesis: No significant difference between the control and treatment groups.")
+#p-value = 0.19
+#Fail to reject null hypothesis: No significant difference between the control and treatment groups.
 
 #Post-Test Computations
 
