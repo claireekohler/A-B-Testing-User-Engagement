@@ -42,6 +42,9 @@ Before conducting any statistical testing, I ensured my data was clean to minimi
 
 The difference between the converted users in the control and treatment group was only about two hundred, so testing the null hypothesis that the conversion rates were the same using statistical methods, not just judgement was imperative.
 
+<img width="759" alt="Screenshot 2025-01-28 at 16 40 21" src="https://github.com/user-attachments/assets/f7eaa925-1429-4b2c-825b-6fc6966f5023" />
+
+
 Normality is a key assumption for many statistical tests, such as the Welch T-Test often used in A/B Testing. To test for normality in the data, I used the Shapiro-Wilk Test. The null hypothesis for this test states that the data is normally distributed. The test outputs a statistic and a p-value, and with an alpha significance level of 0.05, the resulting p-value was 0. This led me to reject the null hypothesis, concluding that the data distribution was not normal.
 
 In A/B Testing, random and equal assignment of users to the control and treatment groups is critical to reduce selection bias. Although I did not perform the experiment myself, I assumed random allocation as a baseline. To validate this assumption, I tested for class imbalance using the Sample Ratio Mismatch (SRM) test. This involved comparing the observed ratio of users in the control and treatment groups against the expected 50-50 ratio using a chi-squared test. With a p-value above 0.05, there was no evidence of sample ratio mismatch, supporting the assumption of balanced group allocation.
